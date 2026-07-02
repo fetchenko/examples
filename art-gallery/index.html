@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" class="selection:bg-oxide selection:text-canvas">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,534 +9,146 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Work+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wall: "#1c1b19",
+              walldeep: "#131211",
+              canvas: "#ede4d3",
+              canvasdim: "#d8cdb8",
+              oxide: "#b8492f",
+              ochre: "#c99a3d",
+              teal: "#21514c",
+              ink: "#0f0e0d",
+            },
+            fontFamily: {
+              display: ["Fraunces", "serif"],
+              body: ['"Work Sans"', "sans-serif"],
+              mono: ['"JetBrains Mono"', "monospace"],
+            },
+            keyframes: {
+              fadeUp: {
+                "0%": { opacity: 0, transform: "translateY(16px)" },
+                "100%": { opacity: 1, transform: "translateY(0)" },
+              },
+              draw: {
+                "0%": { strokeDashoffset: 2600 },
+                "100%": { strokeDashoffset: 0 },
+              },
+            },
+            animation: {
+              fadeUp: "fadeUp 0.9s ease forwards",
+              draw: "draw 2.6s cubic-bezier(0.4,0,0.2,1) forwards",
+            },
+          },
+        },
+      };
+    </script>
     <style>
-      :root {
-        --wall: #1c1b19;
-        --wall-deep: #131211;
-        --canvas: #ede4d3;
-        --canvas-dim: #d8cdb8;
-        --oxide: #b8492f;
-        --ochre: #c99a3d;
-        --teal: #21514c;
-        --ink: #0f0e0d;
-        --line: rgba(237, 228, 211, 0.14);
+      /* Tailwind's arbitrary-value system can't express staggered per-element
+     animation-delay cleanly, so the handful of delays live here. */
+      .d-02 {
+        animation-delay: 0.2s;
       }
-
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
+      .d-14 {
+        animation-delay: 1.4s;
       }
-
+      .d-16 {
+        animation-delay: 1.6s;
+      }
+      .d-175 {
+        animation-delay: 1.75s;
+      }
+      .d-20 {
+        animation-delay: 2s;
+      }
+      .d-22 {
+        animation-delay: 2.2s;
+      }
       html {
         scroll-behavior: smooth;
       }
-
-      body {
-        background: var(--wall);
-        color: var(--canvas);
-        font-family: "Work Sans", sans-serif;
-        font-weight: 300;
-        -webkit-font-smoothing: antialiased;
-        overflow-x: hidden;
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        * {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
-      }
-
-      a {
-        color: inherit;
-      }
-
-      .display {
-        font-family: "Fraunces", serif;
-        font-weight: 500;
-        letter-spacing: -0.01em;
-      }
-
-      .mono {
-        font-family: "JetBrains Mono", monospace;
-        letter-spacing: 0.02em;
-      }
-
-      ::selection {
-        background: var(--oxide);
-        color: var(--canvas);
-      }
-
-      a:focus-visible,
-      button:focus-visible {
-        outline: 2px solid var(--ochre);
-        outline-offset: 4px;
-      }
-
-      /* ---------- NAV ---------- */
-      .nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 100;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 26px 5vw;
-        mix-blend-mode: difference;
-        pointer-events: none;
-      }
-      .nav * {
-        pointer-events: auto;
-      }
-      .nav-mark {
-        font-family: "Fraunces", serif;
-        font-style: italic;
-        font-weight: 500;
-        font-size: 1.15rem;
-        color: var(--canvas);
-        text-decoration: none;
-      }
-      .nav-links {
-        display: flex;
-        gap: 36px;
-        list-style: none;
-      }
-      .nav-links a {
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        text-decoration: none;
-        color: var(--canvas);
-        opacity: 0.75;
-        transition: opacity 0.2s ease;
-      }
-      .nav-links a:hover {
-        opacity: 1;
-      }
-      @media (max-width: 720px) {
-        .nav-links {
-          gap: 18px;
-        }
-        .nav-links a {
-          font-size: 0.68rem;
-        }
-      }
-
-      /* ---------- HERO ---------- */
-      .hero {
-        position: relative;
-        min-height: 100svh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 0 5vw;
-        overflow: hidden;
-      }
-      .hero-stroke {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-      }
-      .hero-stroke path {
-        stroke-dasharray: 2600;
-        stroke-dashoffset: 2600;
-        animation: draw 2.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
-      }
-      @keyframes draw {
-        to {
-          stroke-dashoffset: 0;
-        }
-      }
-
-      .hero-inner {
-        position: relative;
-        z-index: 2;
-        max-width: 1000px;
-      }
-      .eyebrow {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.18em;
-        color: var(--ochre);
-        margin-bottom: 28px;
-        opacity: 0;
-        animation: fadeUp 0.8s ease 1.6s forwards;
-      }
-      .eyebrow::before {
-        content: "";
-        width: 34px;
-        height: 1px;
-        background: var(--ochre);
-      }
-      h1.hero-title {
-        font-size: clamp(2.6rem, 7vw, 6.2rem);
-        line-height: 0.98;
-        color: var(--canvas);
-        opacity: 0;
-        animation: fadeUp 0.9s ease 1.75s forwards;
-      }
-      h1.hero-title em {
-        font-style: italic;
-        color: var(--oxide);
-      }
-      .hero-sub {
-        margin-top: 30px;
-        max-width: 460px;
-        font-size: 1.05rem;
-        line-height: 1.7;
-        color: var(--canvas-dim);
-        opacity: 0;
-        animation: fadeUp 0.9s ease 2s forwards;
-      }
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(16px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .hero-meta {
-        position: absolute;
-        right: 5vw;
-        bottom: 48px;
-        text-align: right;
-        font-size: 0.75rem;
-        color: var(--canvas-dim);
-        opacity: 0;
-        animation: fadeUp 0.9s ease 2.2s forwards;
-      }
-      @media (max-width: 720px) {
-        .hero-meta {
-          position: static;
-          margin-top: 60px;
-          text-align: left;
-        }
-      }
-
-      /* ---------- SECTION LABELS ---------- */
-      .section {
-        padding: 140px 5vw;
-        position: relative;
-      }
-      .section-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        gap: 24px;
-        margin-bottom: 70px;
-        border-bottom: 1px solid var(--line);
-        padding-bottom: 28px;
-      }
-      .section-head .tag {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-        color: var(--ochre);
-      }
-      .section-head h2 {
-        font-size: clamp(1.9rem, 4vw, 3.2rem);
-        color: var(--canvas);
-        margin-top: 10px;
-      }
-      .section-head p {
-        max-width: 320px;
-        font-size: 0.92rem;
-        color: var(--canvas-dim);
-        line-height: 1.6;
-        text-align: right;
-      }
-      @media (max-width: 820px) {
-        .section {
-          padding: 90px 6vw;
-        }
-        .section-head {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-        .section-head p {
-          text-align: left;
-        }
-      }
-
-      /* ---------- GALLERY WALL ---------- */
-      .wall {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        gap: 28px;
-      }
-      .frame {
-        position: relative;
-        background: var(--wall-deep);
-        border: 1px solid var(--line);
-        padding: 18px 18px 22px;
-        cursor: pointer;
-        transition:
-          transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-          border-color 0.4s ease;
-      }
-      .frame:hover {
-        transform: translateY(-6px);
-        border-color: rgba(237, 228, 211, 0.3);
-      }
-      .frame:nth-child(1) {
-        grid-column: span 7;
-      }
-      .frame:nth-child(2) {
-        grid-column: span 5;
-      }
-      .frame:nth-child(3) {
-        grid-column: span 4;
-      }
-      .frame:nth-child(4) {
-        grid-column: span 4;
-      }
-      .frame:nth-child(5) {
-        grid-column: span 4;
-      }
-      .frame:nth-child(6) {
-        grid-column: span 6;
-      }
-      .frame:nth-child(7) {
-        grid-column: span 6;
-      }
-      @media (max-width: 900px) {
-        .frame,
-        .frame:nth-child(1),
-        .frame:nth-child(2),
-        .frame:nth-child(3),
-        .frame:nth-child(4),
-        .frame:nth-child(5),
-        .frame:nth-child(6),
-        .frame:nth-child(7) {
-          grid-column: span 12;
-        }
-      }
-      .frame svg {
-        width: 100%;
-        display: block;
-        aspect-ratio: 4/5;
-      }
-      .frame-cap {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-top: 16px;
-      }
-      .frame-cap .name {
-        font-family: "Fraunces", serif;
-        font-style: italic;
-        font-size: 1.05rem;
-        color: var(--canvas);
-      }
-      .frame-cap .meta {
-        font-size: 0.72rem;
-        color: var(--canvas-dim);
-      }
-
-      /* ---------- ABOUT ---------- */
-      .about-grid {
-        display: grid;
-        grid-template-columns: 0.85fr 1.15fr;
-        gap: 80px;
-        align-items: start;
-      }
-      @media (max-width: 900px) {
-        .about-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-      .about-portrait {
-        aspect-ratio: 3/4;
-        border: 1px solid var(--line);
-      }
-      .about-text p {
-        font-size: 1.15rem;
-        line-height: 1.85;
-        color: var(--canvas-dim);
-        margin-bottom: 24px;
-        max-width: 56ch;
-      }
-      .about-text p:first-child {
-        color: var(--canvas);
-        font-size: 1.3rem;
-      }
-      .stat-row {
-        display: flex;
-        gap: 56px;
-        margin-top: 50px;
-        flex-wrap: wrap;
-      }
-      .stat b {
-        display: block;
-        font-family: "Fraunces", serif;
-        font-size: 2.4rem;
-        color: var(--ochre);
-      }
-      .stat span {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--canvas-dim);
-      }
-
-      /* ---------- PROCESS / TIMELINE ---------- */
-      .timeline {
-        display: flex;
-        flex-direction: column;
-      }
-      .t-row {
-        display: grid;
-        grid-template-columns: 110px 1fr 2fr;
-        gap: 32px;
-        padding: 26px 0;
-        border-bottom: 1px solid var(--line);
-        align-items: baseline;
-      }
-      .t-row:first-child {
-        border-top: 1px solid var(--line);
-      }
-      .t-row .yr {
-        color: var(--oxide);
-      }
-      .t-row .place {
-        color: var(--canvas);
-        font-family: "Fraunces", serif;
-        font-style: italic;
-        font-size: 1.15rem;
-      }
-      .t-row .desc {
-        color: var(--canvas-dim);
-        font-size: 0.95rem;
-        line-height: 1.6;
-      }
-      @media (max-width: 700px) {
-        .t-row {
-          grid-template-columns: 1fr;
-          gap: 6px;
-          padding: 20px 0;
-        }
-      }
-
-      /* ---------- CONTACT ---------- */
-      .contact {
-        background: var(--wall-deep);
-        padding: 140px 5vw 100px;
-        border-top: 1px solid var(--line);
-      }
-      .contact-inner {
-        max-width: 760px;
-      }
-      .contact h2 {
-        font-size: clamp(2rem, 5vw, 3.6rem);
-        color: var(--canvas);
-        line-height: 1.1;
-      }
-      .contact h2 em {
-        color: var(--ochre);
-        font-style: italic;
-      }
-      .contact-links {
-        margin-top: 50px;
-        display: flex;
-        gap: 48px;
-        flex-wrap: wrap;
-      }
-      .contact-links a {
-        text-decoration: none;
-        font-size: 1rem;
-        color: var(--canvas);
-        border-bottom: 1px solid var(--oxide);
-        padding-bottom: 4px;
-        transition: opacity 0.2s ease;
-      }
-      .contact-links a:hover {
-        opacity: 0.7;
-      }
-      .foot {
-        margin-top: 110px;
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.72rem;
-        color: var(--canvas-dim);
-        flex-wrap: wrap;
-        gap: 12px;
-      }
-
-      /* ---------- MODAL ---------- */
-      .modal-bg {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 14, 13, 0.92);
-        z-index: 200;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 5vw;
-      }
-      .modal-bg.open {
-        display: flex;
-      }
-      .modal {
-        max-width: 640px;
-        width: 100%;
-      }
-      .modal svg {
-        width: 100%;
-        display: block;
-        aspect-ratio: 4/5;
-      }
-      .modal-info {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-        align-items: baseline;
-      }
-      .modal-info .name {
-        font-family: "Fraunces", serif;
-        font-style: italic;
-        font-size: 1.3rem;
-        color: var(--canvas);
-      }
-      .modal-close {
-        position: absolute;
-        top: 28px;
-        right: 5vw;
-        background: none;
-        border: none;
-        color: var(--canvas);
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        cursor: pointer;
-      }
     </style>
   </head>
-  <body>
-    <nav class="nav">
-      <a href="#" class="nav-mark">Марина Сойка</a>
-      <ul class="nav-links">
-        <li><a href="#works">Работы</a></li>
-        <li><a href="#about">Об авторе</a></li>
-        <li><a href="#shows">Выставки</a></li>
-        <li><a href="#contact">Связь</a></li>
+  <body
+    class="bg-wall text-canvas font-body font-light antialiased overflow-x-hidden"
+  >
+    <nav
+      class="fixed top-0 left-0 right-0 z-[100] flex justify-between items-center py-[26px] px-[5vw] mix-blend-difference opacity-0 animate-fadeUp d-14"
+    >
+      <a
+        href="#"
+        class="font-display italic font-medium text-lg text-canvas no-underline pointer-events-auto"
+        >Марина Сойка</a
+      >
+
+      <ul
+        id="navLinks"
+        class="pointer-events-auto fixed inset-0 z-40 flex flex-col items-start justify-center gap-7 bg-walldeep px-[8vw] translate-x-full transition-transform duration-500 ease-in-out motion-reduce:transition-none md:static md:z-auto md:flex-row md:items-center md:gap-9 md:bg-transparent md:px-0 md:translate-x-0 md:transition-none list-none"
+      >
+        <li>
+          <a
+            href="#works"
+            data-section="works"
+            class="nav-link relative text-2xl md:text-xs font-display italic md:font-body md:not-italic uppercase md:tracking-[0.12em] no-underline text-canvas opacity-100 md:opacity-75 hover:opacity-100 pb-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-px after:bg-current after:scale-x-0 after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-left"
+            >Работы</a
+          >
+        </li>
+        <li>
+          <a
+            href="#about"
+            data-section="about"
+            class="nav-link relative text-2xl md:text-xs font-display italic md:font-body md:not-italic uppercase md:tracking-[0.12em] no-underline text-canvas opacity-100 md:opacity-75 hover:opacity-100 pb-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-px after:bg-current after:scale-x-0 after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-left"
+            >Об авторе</a
+          >
+        </li>
+        <li>
+          <a
+            href="#shows"
+            data-section="shows"
+            class="nav-link relative text-2xl md:text-xs font-display italic md:font-body md:not-italic uppercase md:tracking-[0.12em] no-underline text-canvas opacity-100 md:opacity-75 hover:opacity-100 pb-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-px after:bg-current after:scale-x-0 after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-left"
+            >Выставки</a
+          >
+        </li>
+        <li>
+          <a
+            href="#contact"
+            data-section="contact"
+            class="nav-link relative text-2xl md:text-xs font-display italic md:font-body md:not-italic uppercase md:tracking-[0.12em] no-underline text-canvas opacity-100 md:opacity-75 hover:opacity-100 pb-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-px after:bg-current after:scale-x-0 after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-left"
+            >Связь</a
+          >
+        </li>
       </ul>
+
+      <button
+        id="navToggle"
+        aria-label="Открыть меню"
+        aria-expanded="false"
+        class="pointer-events-auto md:hidden relative z-50 w-7 h-5 bg-transparent border-none cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ochre focus-visible:outline-offset-4"
+      >
+        <span
+          id="bar1"
+          class="absolute left-0 right-0 top-0 h-px bg-canvas transition-all duration-300"
+        ></span>
+        <span
+          id="bar2"
+          class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-px bg-canvas transition-all duration-300"
+        ></span>
+        <span
+          id="bar3"
+          class="absolute left-0 right-0 bottom-0 h-px bg-canvas transition-all duration-300"
+        ></span>
+      </button>
     </nav>
 
-    <header class="hero">
+    <header
+      class="relative min-h-[100svh] flex flex-col justify-center px-[5vw] overflow-hidden"
+    >
       <svg
-        class="hero-stroke"
+        class="absolute inset-0 w-full h-full z-0"
         viewBox="0 0 1200 800"
         preserveAspectRatio="xMidYMid slice"
       >
@@ -546,6 +158,8 @@
           stroke="#b8492f"
           stroke-width="3"
           opacity="0.55"
+          stroke-dasharray="2600"
+          class="motion-reduce:!stroke-dashoffset-0 animate-draw d-02"
         />
         <path
           d="M -50 560 C 220 440, 400 660, 640 500 S 1000 300, 1250 440"
@@ -553,44 +167,73 @@
           stroke="#c99a3d"
           stroke-width="1.5"
           opacity="0.4"
+          stroke-dasharray="2600"
+          class="motion-reduce:!stroke-dashoffset-0 animate-draw d-02"
         />
       </svg>
-      <div class="hero-inner">
-        <div class="eyebrow">Живопись маслом и пигментом</div>
-        <h1 class="hero-title display">
-          Цвет — это то,<br />что остаётся<br />после <em>тишины</em>.
+
+      <div class="relative z-[2] max-w-[1000px]">
+        <div
+          class="flex items-center gap-3.5 text-xs uppercase tracking-[0.18em] text-ochre mb-7 opacity-0 animate-fadeUp d-16 before:content-[''] before:w-[34px] before:h-px before:bg-ochre"
+        >
+          Живопись маслом и пигментом
+        </div>
+        <h1
+          class="font-display font-medium text-[clamp(2.6rem,7vw,6.2rem)] leading-[0.98] text-canvas opacity-0 animate-fadeUp d-175"
+        >
+          Цвет — это то,<br />что остаётся<br />после
+          <em class="italic text-oxide">тишины</em>.
         </h1>
-        <p class="hero-sub">
+        <p
+          class="mt-[30px] max-w-[460px] text-lg leading-[1.7] text-canvasdim opacity-0 animate-fadeUp d-20"
+        >
           Марина Сойка пишет пейзажи внутренних состояний: густой пигмент,
           широкий мазок, свет, который будто вспоминают, а не видят.
         </p>
       </div>
-      <div class="hero-meta mono">
+
+      <div
+        class="font-mono absolute right-[5vw] bottom-12 text-right text-xs text-canvasdim opacity-0 animate-fadeUp d-22 max-md:static max-md:mt-16 max-md:text-left"
+      >
         МАСТЕРСКАЯ · САНКТ-ПЕТЕРБУРГ<br />
         С 2011 ГОДА В ЖИВОПИСИ
       </div>
     </header>
 
     <main>
-      <section class="section" id="works">
-        <div class="section-head">
+      <section id="works" class="py-24 px-[6vw] md:py-[140px] md:px-[5vw]">
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-[70px] border-b border-canvas/10 pb-7"
+        >
           <div>
-            <div class="tag mono">01 · Галерея</div>
-            <h2 class="display">Избранные работы</h2>
+            <div
+              class="font-mono text-xs uppercase tracking-[0.16em] text-ochre"
+            >
+              01 · Галерея
+            </div>
+            <h2
+              class="font-display text-[clamp(1.9rem,4vw,3.2rem)] text-canvas mt-2.5"
+            >
+              Избранные работы
+            </h2>
           </div>
-          <p>
+          <p
+            class="max-w-[320px] text-sm text-canvasdim leading-relaxed md:text-right"
+          >
             Каждая картина — отдельный этюд настроения. Нажмите на работу, чтобы
             увидеть её крупнее.
           </p>
         </div>
 
-        <div class="wall" id="wallGrid"></div>
+        <div class="grid grid-cols-12 gap-7" id="wallGrid"></div>
       </section>
 
-      <section class="section" id="about">
-        <div class="about-grid">
+      <section id="about" class="py-24 px-[6vw] md:py-[140px] md:px-[5vw]">
+        <div
+          class="grid grid-cols-1 md:grid-cols-[0.85fr_1.15fr] gap-20 items-start"
+        >
           <svg
-            class="about-portrait"
+            class="aspect-[3/4] border border-canvas/10 w-full"
             viewBox="0 0 300 400"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -610,76 +253,119 @@
             />
             <circle cx="150" cy="130" r="60" fill="#ede4d3" opacity="0.15" />
           </svg>
-          <div class="about-text">
-            <p>
+          <div>
+            <p class="text-canvas text-xl leading-[1.85] mb-6 max-w-[56ch]">
               Марина работает в мастерской на чердаке старого доходного дома —
               там, где свет падает только с восьми утра до полудня, и всё
               остальное время приходится писать по памяти о свете.
             </p>
-            <p>
+            <p class="text-canvasdim text-lg leading-[1.85] mb-6 max-w-[56ch]">
               Она начинала как реставратор, и это чувствуется: в её собственных
               холстах живёт та же почтительность к слоям, к тому, что скрыто под
               верхним мазком. Каждая картина — это несколько картин, написанных
               одна поверх другой и не до конца похороненных.
             </p>
-            <p>
+            <p class="text-canvasdim text-lg leading-[1.85] mb-6 max-w-[56ch]">
               Работает большими сериями, обычно возвращаясь к одному и тому же
               мотиву — окно, побережье, комната — до тех пор, пока не находит
               единственно верный оттенок тишины.
             </p>
-            <div class="stat-row">
-              <div class="stat"><b>140+</b><span>Картин написано</span></div>
-              <div class="stat">
-                <b>12</b><span>Персональных выставок</span>
+            <div class="flex gap-14 mt-12 flex-wrap">
+              <div>
+                <b class="block font-display text-4xl text-ochre font-medium"
+                  >140+</b
+                ><span class="text-xs uppercase tracking-[0.1em] text-canvasdim"
+                  >Картин написано</span
+                >
               </div>
-              <div class="stat">
-                <b>9</b><span>Стран с частными коллекциями</span>
+              <div>
+                <b class="block font-display text-4xl text-ochre font-medium"
+                  >12</b
+                ><span class="text-xs uppercase tracking-[0.1em] text-canvasdim"
+                  >Персональных выставок</span
+                >
+              </div>
+              <div>
+                <b class="block font-display text-4xl text-ochre font-medium"
+                  >9</b
+                ><span class="text-xs uppercase tracking-[0.1em] text-canvasdim"
+                  >Стран с частными коллекциями</span
+                >
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="section" id="shows">
-        <div class="section-head">
+      <section id="shows" class="py-24 px-[6vw] md:py-[140px] md:px-[5vw]">
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-[70px] border-b border-canvas/10 pb-7"
+        >
           <div>
-            <div class="tag mono">02 · Хроника</div>
-            <h2 class="display">Выставки и события</h2>
+            <div
+              class="font-mono text-xs uppercase tracking-[0.16em] text-ochre"
+            >
+              02 · Хроника
+            </div>
+            <h2
+              class="font-display text-[clamp(1.9rem,4vw,3.2rem)] text-canvas mt-2.5"
+            >
+              Выставки и события
+            </h2>
           </div>
-          <p>
+          <p
+            class="max-w-[320px] text-sm text-canvasdim leading-relaxed md:text-right"
+          >
             От первой групповой выставки до персональных проектов в частных
             галереях.
           </p>
         </div>
-        <div class="timeline">
-          <div class="t-row">
-            <div class="yr mono">2025</div>
-            <div class="place">«Комната тишины»</div>
-            <div class="desc">
+
+        <div class="flex flex-col">
+          <div
+            class="grid grid-cols-1 md:grid-cols-[110px_1fr_2fr] gap-2 md:gap-8 py-5 md:py-[26px] border-t border-b border-canvas/10 items-baseline"
+          >
+            <div class="font-mono text-oxide">2025</div>
+            <div class="font-display italic text-lg text-canvas">
+              «Комната тишины»
+            </div>
+            <div class="text-canvasdim text-sm leading-relaxed">
               Персональная выставка, галерея «Свет», Санкт-Петербург — серия из
               18 полотен об интерьерах без людей.
             </div>
           </div>
-          <div class="t-row">
-            <div class="yr mono">2023</div>
-            <div class="place">«Побережье, зима»</div>
-            <div class="desc">
+          <div
+            class="grid grid-cols-1 md:grid-cols-[110px_1fr_2fr] gap-2 md:gap-8 py-5 md:py-[26px] border-b border-canvas/10 items-baseline"
+          >
+            <div class="font-mono text-oxide">2023</div>
+            <div class="font-display italic text-lg text-canvas">
+              «Побережье, зима»
+            </div>
+            <div class="text-canvasdim text-sm leading-relaxed">
               Групповая выставка современной пейзажной живописи, Арт-центр
               «Пристань», Калининград.
             </div>
           </div>
-          <div class="t-row">
-            <div class="yr mono">2020</div>
-            <div class="place">«Слои памяти»</div>
-            <div class="desc">
+          <div
+            class="grid grid-cols-1 md:grid-cols-[110px_1fr_2fr] gap-2 md:gap-8 py-5 md:py-[26px] border-b border-canvas/10 items-baseline"
+          >
+            <div class="font-mono text-oxide">2020</div>
+            <div class="font-display italic text-lg text-canvas">
+              «Слои памяти»
+            </div>
+            <div class="text-canvasdim text-sm leading-relaxed">
               Дебютная персональная выставка по мотивам реставрационной практики
               автора.
             </div>
           </div>
-          <div class="t-row">
-            <div class="yr mono">2017</div>
-            <div class="place">Мастерская открыта</div>
-            <div class="desc">
+          <div
+            class="grid grid-cols-1 md:grid-cols-[110px_1fr_2fr] gap-2 md:gap-8 py-5 md:py-[26px] border-b border-canvas/10 items-baseline"
+          >
+            <div class="font-mono text-oxide">2017</div>
+            <div class="font-display italic text-lg text-canvas">
+              Мастерская открыта
+            </div>
+            <div class="text-canvasdim text-sm leading-relaxed">
               Переход от реставрации к самостоятельной живописи, первая серия
               работ маслом.
             </div>
@@ -688,41 +374,65 @@
       </section>
     </main>
 
-    <footer class="contact" id="contact">
-      <div class="contact-inner">
-        <h2 class="display">
-          Хотите картину<br />для своего <em>пространства</em>?
-        </h2>
-        <p
-          style="
-            margin-top: 24px;
-            color: var(--canvas-dim);
-            max-width: 48ch;
-            line-height: 1.7;
-          "
+    <footer
+      id="contact"
+      class="bg-walldeep border-t border-canvas/10 py-24 px-[6vw] md:py-[140px] md:px-[5vw] pb-24"
+    >
+      <div class="max-w-[760px]">
+        <h2
+          class="font-display text-[clamp(2rem,5vw,3.6rem)] text-canvas leading-[1.1]"
         >
+          Хотите картину<br />для своего
+          <em class="italic text-ochre">пространства</em>?
+        </h2>
+        <p class="mt-6 text-canvasdim max-w-[48ch] leading-[1.7]">
           Открыта для заказов на индивидуальные работы, участия в выставках и
           сотрудничества с интерьерными студиями.
         </p>
-        <div class="contact-links mono">
-          <a href="mailto:hello@marinasoyka.art">hello@marinasoyka.art</a>
-          <a href="#">Instagram ↗</a>
-          <a href="#">Мастерская на карте ↗</a>
+        <div class="font-mono mt-12 flex gap-12 flex-wrap">
+          <a
+            href="mailto:hello@marinasoyka.art"
+            class="text-canvas no-underline border-b border-oxide pb-1 hover:opacity-70 transition-opacity"
+            >hello@marinasoyka.art</a
+          >
+          <a
+            href="#"
+            class="text-canvas no-underline border-b border-oxide pb-1 hover:opacity-70 transition-opacity"
+            >Instagram ↗</a
+          >
+          <a
+            href="#"
+            class="text-canvas no-underline border-b border-oxide pb-1 hover:opacity-70 transition-opacity"
+            >Мастерская на карте ↗</a
+          >
         </div>
       </div>
-      <div class="foot mono">
+      <div
+        class="font-mono mt-28 flex justify-between text-xs text-canvasdim flex-wrap gap-3"
+      >
         <span>© 2026 Марина Сойка</span>
         <span>Сайт — пример из портфолио веб-дизайнера</span>
       </div>
     </footer>
 
-    <div class="modal-bg" id="modalBg">
-      <button class="modal-close" id="modalClose">Закрыть ✕</button>
-      <div class="modal">
+    <div
+      id="modalBg"
+      class="hidden fixed inset-0 bg-ink/95 z-[200] items-center justify-center px-[5vw]"
+    >
+      <button
+        id="modalClose"
+        class="absolute top-7 right-[5vw] bg-transparent border-none text-canvas text-xs uppercase tracking-[0.1em] cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-ochre focus-visible:outline-offset-4"
+      >
+        Закрыть ✕
+      </button>
+      <div class="max-w-[640px] w-full">
         <div id="modalArt"></div>
-        <div class="modal-info">
-          <span class="name display" id="modalName"></span>
-          <span class="meta mono" id="modalMeta"></span>
+        <div class="flex justify-between items-baseline mt-5">
+          <span
+            id="modalName"
+            class="font-display italic text-xl text-canvas"
+          ></span>
+          <span id="modalMeta" class="font-mono text-xs text-canvasdim"></span>
         </div>
       </div>
     </div>
@@ -774,6 +484,17 @@
         },
       ];
 
+      // Non-uniform gallery-wall layout, matched to each frame via Tailwind col-span utilities
+      const spans = [
+        "col-span-12 md:col-span-7",
+        "col-span-12 md:col-span-5",
+        "col-span-12 md:col-span-4",
+        "col-span-12 md:col-span-4",
+        "col-span-12 md:col-span-4",
+        "col-span-12 md:col-span-6",
+        "col-span-12 md:col-span-6",
+      ];
+
       function seededRandom(seed) {
         let s = seed;
         return function () {
@@ -788,10 +509,8 @@
           h = 500;
         let shapes = "";
 
-        // background wash
         shapes += `<rect width="${w}" height="${h}" fill="${palette[2]}"/>`;
 
-        // layered blurred brush ellipses
         const blobCount = 5 + Math.floor(rand() * 3);
         for (let i = 0; i < blobCount; i++) {
           const cx = rand() * w;
@@ -804,7 +523,6 @@
           shapes += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${color}" opacity="${op.toFixed(2)}" transform="rotate(${rot} ${cx} ${cy})" filter="url(#soft${seed})"/>`;
         }
 
-        // brush strokes (paths)
         const strokeCount = 4 + Math.floor(rand() * 4);
         for (let i = 0; i < strokeCount; i++) {
           const y = rand() * h;
@@ -820,14 +538,13 @@
           shapes += `<path d="M${x1} ${y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${x2} ${y + (rand() - 0.5) * 100}" stroke="${color}" stroke-width="${sw.toFixed(1)}" fill="none" opacity="${op.toFixed(2)}" stroke-linecap="round"/>`;
         }
 
-        // fine texture lines
         for (let i = 0; i < 10; i++) {
           const y = rand() * h;
           const color = palette[Math.floor(rand() * palette.length)];
           shapes += `<line x1="0" y1="${y}" x2="${w}" y2="${y + (rand() - 0.5) * 40}" stroke="${color}" stroke-width="0.6" opacity="0.15"/>`;
         }
 
-        return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+        return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" class="w-full block aspect-[4/5]">
     <defs><filter id="soft${seed}"><feGaussianBlur stdDeviation="18"/></filter></defs>
     ${shapes}
   </svg>`;
@@ -836,12 +553,12 @@
       const wall = document.getElementById("wallGrid");
       works.forEach((work, i) => {
         const frame = document.createElement("div");
-        frame.className = "frame";
+        frame.className = `${spans[i]} relative bg-walldeep border border-canvas/10 p-[18px] pb-[22px] cursor-pointer transition-transform duration-300 ease-out hover:-translate-y-1.5 hover:border-canvas/30`;
         frame.innerHTML = `
     ${genPainting(i * 17 + 3, work.palette)}
-    <div class="frame-cap">
-      <span class="name">${work.name}</span>
-      <span class="meta mono">${work.year}</span>
+    <div class="flex justify-between items-baseline mt-4">
+      <span class="font-display italic text-base text-canvas">${work.name}</span>
+      <span class="font-mono text-xs text-canvasdim">${work.year}</span>
     </div>
   `;
         frame.addEventListener("click", () => openModal(i));
@@ -858,17 +575,76 @@
         modalArt.innerHTML = genPainting(i * 17 + 3, work.palette);
         modalName.textContent = work.name;
         modalMeta.textContent = `${work.year} · ${work.medium}`;
-        modalBg.classList.add("open");
+        modalBg.classList.remove("hidden");
+        modalBg.classList.add("flex");
+      }
+      function closeModal() {
+        modalBg.classList.add("hidden");
+        modalBg.classList.remove("flex");
       }
       document
         .getElementById("modalClose")
-        .addEventListener("click", () => modalBg.classList.remove("open"));
+        .addEventListener("click", closeModal);
       modalBg.addEventListener("click", (e) => {
-        if (e.target === modalBg) modalBg.classList.remove("open");
+        if (e.target === modalBg) closeModal();
       });
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") modalBg.classList.remove("open");
+        if (e.key === "Escape") closeModal();
       });
+
+      // ---------- Mobile nav toggle ----------
+      const navToggle = document.getElementById("navToggle");
+      const navLinks = document.getElementById("navLinks");
+      const bar1 = document.getElementById("bar1");
+      const bar2 = document.getElementById("bar2");
+      const bar3 = document.getElementById("bar3");
+
+      function setMenuOpen(isOpen) {
+        navLinks.classList.toggle("translate-x-full", !isOpen);
+        navLinks.classList.toggle("translate-x-0", isOpen);
+        navToggle.setAttribute("aria-expanded", String(isOpen));
+        navToggle.setAttribute(
+          "aria-label",
+          isOpen ? "Закрыть меню" : "Открыть меню",
+        );
+        bar1.classList.toggle("rotate-45", isOpen);
+        bar1.classList.toggle("top-1/2", isOpen);
+        bar1.classList.toggle("-translate-y-1/2", isOpen);
+        bar2.classList.toggle("opacity-0", isOpen);
+        bar3.classList.toggle("-rotate-45", isOpen);
+        bar3.classList.toggle("bottom-1/2", isOpen);
+        bar3.classList.toggle("translate-y-1/2", isOpen);
+      }
+
+      navToggle.addEventListener("click", () => {
+        const willOpen = !navLinks.classList.contains("translate-x-0");
+        setMenuOpen(willOpen);
+      });
+      navLinks
+        .querySelectorAll("a")
+        .forEach((a) => a.addEventListener("click", () => setMenuOpen(false)));
+
+      // ---------- Active link on scroll ----------
+      const sections = ["works", "about", "shows", "contact"]
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+      const navAnchors = navLinks.querySelectorAll("a");
+      const sectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              navAnchors.forEach((a) => {
+                const isActive = a.dataset.section === entry.target.id;
+                a.classList.toggle("opacity-100", isActive);
+                a.classList.toggle("after:scale-x-100", isActive);
+                a.classList.toggle("after:origin-left", isActive);
+              });
+            }
+          });
+        },
+        { rootMargin: "-45% 0px -50% 0px" },
+      );
+      sections.forEach((s) => sectionObserver.observe(s));
     </script>
   </body>
 </html>
