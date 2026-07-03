@@ -601,7 +601,9 @@
 
       function setMenuOpen(isOpen) {
         navLinks.classList.toggle("translate-x-full", !isOpen);
+        navLinks.classList.toggle("min-h-0", !isOpen);
         navLinks.classList.toggle("translate-x-0", isOpen);
+        navLinks.classList.toggle("min-h-64", isOpen);
         navToggle.setAttribute("aria-expanded", String(isOpen));
         navToggle.setAttribute(
           "aria-label",
